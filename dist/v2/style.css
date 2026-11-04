@@ -37,6 +37,11 @@
 .indicator-context{display:flex;align-items:flex-start;gap:16px;margin-top:10px;flex-wrap:wrap}.indicator-context .dora-row{margin-top:0;flex:1;min-width:110px}.wind-summary{display:flex;gap:12px;padding-right:16px;border-right:1px solid var(--line)}.wind-item{display:flex;flex-direction:column;align-items:center;gap:4px}.wind-item small{font-size:11px;color:var(--muted);line-height:1.2}.wind-item>small:first-child{color:var(--gold)}.wind-item .tile{width:31px;min-width:31px;height:46px;padding:2px}.wind-item .honor-character{font-size:26px}
 
 /* Persistent recipe marks: tile identity remains visible; each effect has its own label. */
+.choice-reminder{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;margin:12px 0;background:#433d2c;border:1px solid #ad945f;border-radius:8px;color:#fae4b7;font-size:13px}
+.focus-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}.focus-choices button{min-height:48px}
+#shop-choice .dialog-head{align-items:flex-start}#shop-choice .dialog-head h2{font-size:21px}#shop-choice .dialog-head button{flex-shrink:0;font-size:12px}
+#shop-choice .product-copy h3{margin-top:4px}
+@media(max-width:600px){#shop-choice{padding:18px;width:calc(100% - 24px);max-height:90dvh}.focus-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#shop-choice .dialog-head{gap:8px}#shop-choice .dialog-head h2{font-size:18px}#shop-choice .pack-choices{grid-template-columns:1fr}#shop-choice .product-art{height:45px}#shop-choice .product-art>span{font-size:25px}}
 .floor-slot .floor-face .tile-tag,.floor-slot .floor-face .effect-count{display:none}
 .floor-slot.has-property .floor-face{border-color:#a9c8fb;box-shadow:0 5px #7588a5,inset 0 0 0 2px #b8cff0}
 .floor-slot.has-utility:not(.has-property) .floor-face{border-color:#e0be7d;box-shadow:0 5px #97815b,inset 0 0 0 2px #e5c895}
