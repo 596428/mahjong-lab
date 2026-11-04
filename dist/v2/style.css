@@ -36,6 +36,17 @@
 /* Wind references sit alongside dora, following the v1 wind summary. */
 .indicator-context{display:flex;align-items:flex-start;gap:16px;margin-top:10px;flex-wrap:wrap}.indicator-context .dora-row{margin-top:0;flex:1;min-width:110px}.wind-summary{display:flex;gap:12px;padding-right:16px;border-right:1px solid var(--line)}.wind-item{display:flex;flex-direction:column;align-items:center;gap:4px}.wind-item small{font-size:11px;color:var(--muted);line-height:1.2}.wind-item>small:first-child{color:var(--gold)}.wind-item .tile{width:31px;min-width:31px;height:46px;padding:2px}.wind-item .honor-character{font-size:26px}
 
+/* Persistent recipe marks: tile identity remains visible; each effect has its own label. */
+.floor-slot .floor-face .tile-tag,.floor-slot .floor-face .effect-count{display:none}
+.floor-slot.has-property .floor-face{border-color:#a9c8fb;box-shadow:0 5px #7588a5,inset 0 0 0 2px #b8cff0}
+.floor-slot.has-utility:not(.has-property) .floor-face{border-color:#e0be7d;box-shadow:0 5px #97815b,inset 0 0 0 2px #e5c895}
+.floor-slot .floor-face.selected{outline:3px solid var(--gold);outline-offset:4px;transform:translateY(-5px)}
+.floor-marks{display:flex;flex-direction:column;gap:3px;width:100%;min-width:0}
+.floor-mark{display:flex;justify-content:center;padding:3px 1px;border-radius:5px;text-align:center;font-size:11px;line-height:1.35;white-space:nowrap}
+.floor-mark b{font-weight:600}.floor-mark.property{background:#2a4054;color:#e1ecff;border-top:2px solid #a9c8fb}
+.floor-mark.utility{background:#433d2c;color:#fae4b7;border-top:2px solid #e0be7d}
+.floor-slot .plain-floor{color:var(--muted)}
+
 /* v2.8: all tiles fit the mobile table; longer hands use two rows. */
 .recipe-guide{margin:12px 0;color:var(--muted);font-size:13px}.recipe-guide p{margin-top:8px}
 .wait-estimate{margin-top:14px;padding:12px;border:1px solid #8d8960;border-radius:9px;background:#193629}.wait-counts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.wait-counts>span{padding:5px 9px;border-radius:5px;background:#304c36}.wait-counts .exhausted{opacity:.65}.wait-estimate p{font-size:12px;color:var(--muted)}
