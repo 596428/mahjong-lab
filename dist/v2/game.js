@@ -42,22 +42,23 @@ export function newGame(options={}){
  const seed=String(options.seed||Date.now().toString(36));
  const s={version:27,seed,rng:hash(seed),config,chapter:1,round:1,coins:12,tools:{},recipes:{},recipeOffers:[],equipment:[],moneyHistory:[],packOffers:[],pendingPack:null,rerolls:0,stats:{wins:0,best:0,rounds:0},records:[],log:[],offers:[],phase:'action'};
  s.bossOrder=bossOrder(seed);
- startRound(s);return s;
+ startRound(s,true);return s;
 }
-export function startRound(s){
+export function startRound(s,waitForDraw=false){
  s.config.roundsPerChapter=2;s.isBoss=s.round===2;s.boss=s.isBoss?bossFor(s):null;
  s.target=roundTarget(s.chapter,s.round,s.boss);
  s.score=0;s.purseEarned=0;s.turn=0;s.handNo=0;s.hand=[];s.floor=[];s.locked=[];s.discards=[];s.indicators=[];s.ura=[];s.uraRevealed=false;s.uraKnown=0;s.lastResult=null;
  s.wall=[];for(let type=0;type<34;type++)for(let copy=0;copy<4;copy++)s.wall.push({id:`${s.chapter}-${s.round}-${type}-${copy}`,type,original:type,red:!!s.config.red&&[4,13,22].includes(type)&&copy===0});
  shuffle(s.wall,s);s.excluded=s.wall.splice(0,s.config.excluded);s.indicators.push(s.wall.pop());s.ura.push(s.wall.pop());
 
- newHand(s);note(s,`${s.chapter}챕터 ${s.round}라운드 · 목표 ${s.target}점. 비공개 ${s.excluded.length}장 제외.`);
+ newHand(s,waitForDraw);note(s,`${s.chapter}챕터 ${s.round}라운드 · 목표 ${s.target}점. 비공개 ${s.excluded.length}장 제외.`);
 }
-function newHand(s){
+function newHand(s,waitForDraw=false){
  s.riichiRun=null;s.hand=[];s.locked=[];s.floor=[];s.blockedFloor=null;s.riichi=false;s.riichiDraws=0;s.ippatsuBroken=false;s.rinshan=false;s.handNo++;
  const n=meldCount(s)*3+1;
  if(s.wall.length<n+1+floorCapacity(s)){fail(s,'새 손과 바닥패를 배치할 패가 부족합니다.');return;}
- s.hand=s.wall.splice(s.wall.length-n,n);stockFloor(s);draw(s,false);
+ s.hand=s.wall.splice(s.wall.length-n,n);stockFloor(s);
+ if(waitForDraw){s.phase='awaitDraw';s.drawn=null;s.drawIntegrated=false;}else draw(s,false);
 }
 function draw(s,replacement=false){
  if(!s.wall.length){fail(s,'패산 소진 · 목표 점수에 도달하지 못했습니다.');return;}
@@ -74,6 +75,12 @@ export function scoring(s,source='tsumo',floorId=null,preview=false){
  let hand=s.hand;if(source==='ron'){const x=s.floor.find(t=>t.id===floorId);if(!x)return null;hand=[...hand,x];}
  const winTile=source==='ron'?s.floor.find(x=>x.id===floorId):s.hand.find(x=>x.id===s.drawn)||s.hand.at(-1);
  return evaluate(hand,meldCount(s),s.locked,{source,winType:winTile?.type,winId:winTile?.id,riichi:s.riichi,ippatsu:s.riichi&&!s.ippatsuBroken&&s.riichiDraws<=4,rinshan:s.rinshan,indicators:s.indicators,ura:preview?s.ura.slice(0,s.uraKnown||0):s.ura,riichiMisses:s.riichiRun?.misses||0,equipment:s.equipment,focus:s.focus,floor:s.floor.filter(t=>t.id!==floorId),boss:s.boss?.id});
+}
+export function remainingWaits(s,types){
+ const known=[...s.hand,...s.floor,...s.locked.flatMap(g=>g.tiles),...s.discards,...s.indicators,...s.ura.slice(0,s.uraKnown||0)];
+ const seen=new Set(),counts=Array(34).fill(0);
+ for(const tile of known){if(seen.has(tile.id))continue;seen.add(tile.id);counts[tile.original??tile.type]++;}
+ return [...new Set(types)].map(type=>({type,remaining:Math.max(0,4-counts[type])}));
 }
 export function optionsFor(s){
  const result={tsumo:null,ron:[],calls:[],kans:[],riichi:[]};
@@ -150,7 +157,7 @@ export function act(s,action,payload={}){
   if(afterCall)draw(s);else revealFloor(s);
   if(action==='riichi')note(s,'리치 선언 · 손패 고정. 일반 쯔모 4장 이내 일발 기회.');
  }else if(action==='draw'){
-  if(s.phase!=='floor')throw Error('바닥패 확인 후 다음 쯔모를 받을 수 있습니다.');draw(s);
+  if(!['floor','awaitDraw'].includes(s.phase))throw Error('바닥패 확인 후 다음 쯔모를 받을 수 있습니다.');draw(s);
  }else if(action==='call'){
   if(s.phase!=='floor'||s.riichi)throw Error('지금은 울 수 없습니다.');
   const legal=optionsFor(s).calls.find(o=>o.take===payload.take&&o.kind===payload.kind&&o.ids.join(',')===payload.ids.join(',')&&o.t===payload.t);if(!legal)throw Error('울기 조건이 충족되지 않습니다.');
@@ -222,10 +229,12 @@ export function act(s,action,payload={}){
  return s;
 }
 export function inventory(s){return [...s.wall,...s.excluded,...s.indicators,...s.ura,...s.hand,...s.floor,...s.locked.flatMap(g=>g.tiles),...s.discards];}
-export function assertState(s){const all=inventory(s);if(all.length!==136||new Set(all.map(x=>x.id)).size!==136)throw Error(`패 보존 오류: ${all.length}장`);if(s.locked.length>meldCount(s))throw Error('몸통 수 초과');if(['action','floor','callDiscard'].includes(s.phase)){const expected=3*(meldCount(s)-s.locked.length)+(s.phase==='floor'?1:2);if(s.hand.length!==expected)throw Error(`손패 장수 오류 ${s.hand.length}/${expected} ${s.phase}`);}return true;}
+export function assertState(s){const all=inventory(s);if(all.length!==136||new Set(all.map(x=>x.id)).size!==136)throw Error(`패 보존 오류: ${all.length}장`);if(s.locked.length>meldCount(s))throw Error('몸통 수 초과');if(['action','floor','callDiscard','awaitDraw'].includes(s.phase)){const expected=3*(meldCount(s)-s.locked.length)+(['floor','awaitDraw'].includes(s.phase)?1:2);if(s.hand.length!==expected)throw Error(`손패 장수 오류 ${s.hand.length}/${expected} ${s.phase}`);}return true;}
 // Deterministic practice hands use real tiles from the same round pool.
 export function practice(name,config={}){
  const s=newGame({...config,seed:`practice-${name}`});s.practice=name;s.tools={wind:{left:1},shift:{left:1}};
+ if(name==='firstDraw'){s.tools={};note(s,'첫 쯔모 연습 · 7장을 받은 뒤 쯔모 버튼으로 시작합니다.');assertState(s);return s;}
+ if(name==='wideBoss'){s.equipment=['wideFloor'];s.round=2;s.bossOrder[0]='narrow';startRound(s);s.target=99999;note(s,'진열대 6칸 중 좁은 창 보스가 1칸을 막아 5장을 사용합니다.');assertState(s);return s;}
  const patterns={ron:{hand:[1,2,4,4],floor:[3,8,18],phase:'floor'},riichi:{hand:[1,2,4,4,27],floor:[],phase:'action'},kan:{hand:[4,4,4,7],floor:[4,8,18],phase:'floor'},ankan:{hand:[4,4,4,4,7],floor:[],phase:'action'},kakan:{hand:[4,7],floor:[],phase:'action',locked:[4,4,4]},overlap:{hand:[0,0,1,1,2,2,3,3,4,4,5,5,6,6],floor:[],phase:'action',chapter:3}};
  const p=patterns[name==='chase'?'riichi':name]||patterns.ron;s.chapter=p.chapter||1;
  const pool=inventory(s);s.wall=[];s.excluded=[];s.indicators=[];s.ura=[];s.hand=[];s.floor=[];s.locked=[];s.discards=[];

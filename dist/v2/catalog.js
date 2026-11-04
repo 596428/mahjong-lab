@@ -29,13 +29,13 @@ const PREVIOUS=[
  {id:'gearPack',kind:'pack',name:'장비 팩',price:6,text:'규칙·득점 장비 최대 3개 공개 → 1개 선택. 장비 5칸 제한 공유.',pool:'gear'}
 ];
 const CURRENT=[
- {id:'patternTriad',kind:'recipe',name:'삼색 도안',price:1,special:'triad',numeric:true,text:'숫자패 1장에 적용. 숫자를 유지하며 만수·통수·삭수 모두로 사용. 다른 종류 변경 도안과는 겹치지 않음.'},
- {id:'patternAdjacent',kind:'recipe',name:'이웃 도안',price:1,special:'adjacent',numeric:true,text:'숫자패 1장에 적용. 원래 숫자와 양옆 숫자로 사용. 4삭은 3·4·5삭. 1과 9는 연결하지 않음.'},
- {id:'patternDragon',kind:'recipe',name:'삼원 도안',price:1,special:'dragon',dragonsOnly:true,text:'백·발·중인 바닥패 1장에만 적용. 백·발·중 모두로 사용. 울면 사용한 종류로 고정.'},
- {id:'patternSleeve',kind:'recipe',name:'소매 도안',price:1,utility:true,text:'리치 전 바닥 단계에서 이 패와 고정되지 않은 손패 1장을 교환. 내보낸 손패는 버리며 멘젠 유지. 종류 변경 도안과 함께 부착 가능.'},
- {id:'patternHidden',kind:'recipe',name:'은밀 도안',price:1,utility:true,text:'이 패로 치·퐁해도 멘젠 유지. 몸통은 고정되며 암각으로 세지 않음. 대명깡·가깡에는 적용하지 않음.'},
- {id:'patternRefill',kind:'recipe',name:'보충 도안',price:1,utility:true,text:'이 패를 치·퐁·대명깡으로 가져오면 빈 바닥칸에 패산 1장을 보충. 도안 재적용 없음. 깡의 표시패·영상패를 먼저 확보. 패산이 없으면 미발동.'},
- {id:'wideFloor',kind:'gear',name:'넓은 진열대',price:6,text:'다음 손부터 바닥패 5 → 6장. 추가 패도 패산에서 가져옴. 장비 1칸.'},
+ {id:'patternTriad',kind:'recipe',name:'삼색 도안',price:1,special:'triad',numeric:true,text:'숫자 바닥패 한 장에 이 표시가 붙습니다. 그 패는 같은 숫자의 만·통·삭 중 필요한 종류로 쓸 수 있습니다. 예: 3만을 3통이나 3삭 대신 사용. 게임이 가능한 조합을 자동으로 찾아줍니다.'},
+ {id:'patternAdjacent',kind:'recipe',name:'이웃 도안',price:1,special:'adjacent',numeric:true,text:'숫자 바닥패 한 장을 앞뒤 숫자로도 쓸 수 있게 합니다. 예: 4삭을 3삭·4삭·5삭 중 필요한 패로 사용. 만·통·삭 종류는 그대로이며, 1과 9는 서로 이어지지 않습니다.'},
+ {id:'patternDragon',kind:'recipe',name:'삼원 도안',price:1,special:'dragon',dragonsOnly:true,text:'바닥의 백·발·중 중 한 장에만 붙습니다. 표시가 붙은 패는 백·발·중 어느 것으로도 쓸 수 있습니다. 예: 손패의 백 2장과 이 패로 백 3장을 완성. 숫자패에는 붙지 않습니다.'},
+ {id:'patternSleeve',kind:'recipe',name:'소매 도안',price:1,utility:true,text:'이 표시가 붙은 바닥패는 치·퐁 없이 손패로 가져올 수 있습니다. 리치 선언 전에 바닥패와 내보낼 손패를 고르고, 행동 메뉴에서 소매 교환을 누르세요. 내보낸 패는 버려지고, 멘젠(울지 않은 상태)은 유지됩니다.'},
+ {id:'patternHidden',kind:'recipe',name:'은밀 도안',price:1,utility:true,text:'이 표시가 붙은 바닥패로 치·퐁해도 멘젠(울지 않은 상태)을 유지해 리치를 노릴 수 있습니다. 만든 몸통은 고정되어 버릴 수 없습니다. 암각으로 세지는 않습니다. 이 패로 대명깡하거나, 이렇게 만든 퐁을 가깡으로 바꾸면 멘젠이 깨집니다.'},
+ {id:'patternRefill',kind:'recipe',name:'보충 도안',price:1,utility:true,text:'이 표시가 붙은 바닥패를 치·퐁·대명깡으로 가져오면, 빈자리에 패산에서 새 패 한 장을 놓습니다. 새 패에는 도안이 붙지 않습니다. 패산을 한 장 더 쓰며, 깡에 필요한 패를 남기고 여유가 없으면 보충하지 않습니다.'},
+ {id:'wideFloor',kind:'gear',name:'넓은 진열대',price:6,text:'다음 손부터 바닥패 5 → 6장. 추가 패도 패산에서 가져옵니다. 좁은 창 보스에서는 1칸이 막혀 5장을 사용합니다. 장비 1칸.'},
  {id:'open',kind:'gear',name:'공개 수집가',price:6,text:'화료에 사용한 공개 몸통 1개마다 배율 +1. 은밀 도안으로 멘젠을 유지한 몸통도 공개 몸통으로 셈.'},
  {id:'closed',kind:'gear',name:'정숙의 부적',price:6,text:'멘젠 화료 시 최종 배율 ×1.5. 소매·은밀 도안으로 유지한 멘젠도 인정.'},
  {id:'rig',kind:'gear',name:'위조 감정사',price:7,text:'화료에 사용한 도안 패 1장마다 기본점 +20. 한 패의 여러 도안은 1장으로 셈. 소모품만 사용한 패는 제외.'},

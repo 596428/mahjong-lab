@@ -5,7 +5,7 @@ import {itemById} from '../dist/v2/catalog.js';
 import {evaluate,domains,validHand} from '../dist/v2/rules.js';
 
 test('empty recipes at start; a persistent five-tile stock consumes only the next own draw',()=>{
- const s=newGame({seed:'stock'});assert.deepEqual(s.recipes,{});assert.deepEqual(s.equipment,[]);assert.equal(s.floor.length,5);assert.ok(s.floor.every(t=>!t.special&&!t.floorEffects));
+ const s=newGame({seed:'stock'});act(s,'draw');assert.deepEqual(s.recipes,{});assert.deepEqual(s.equipment,[]);assert.equal(s.floor.length,5);assert.ok(s.floor.every(t=>!t.special&&!t.floorEffects));
  const stock=structuredClone(s.floor),wall=s.wall.length;for(let i=0;i<3;i++){act(s,'discard',{id:s.drawn});assert.deepEqual(s.floor,stock);act(s,'draw');assert.deepEqual(s.floor,stock);assertState(s);}assert.equal(s.wall.length,wall-3);
 });
 test('hundreds of purchases keep restocking at one coin with no cap, including duplicates',()=>{

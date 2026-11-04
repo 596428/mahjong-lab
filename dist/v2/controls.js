@@ -5,7 +5,8 @@ const CALLS={chi:'치',pon:'퐁',daiminkan:'대명깡',ankan:'암깡',kakan:'가
 export function actionChoices(s,selected,floorSelected){
  if(s.riichi)return [];
  const o=optionsFor(s),out=[],put=(action,label,payload={},hint='')=>out.push({action,label,payload,hint});
- if(s.phase==='floor'){
+ if(s.phase==='awaitDraw'){put('draw','쯔모',{},'패산에서 첫 패 1장을 가져옵니다');}
+ else if(s.phase==='floor'){
   const ron=o.ron.find(x=>x.tile.id===floorSelected);if(ron)put('ron','론 · 화료',{id:floorSelected},`${ron.score.score}점부터`);
   const seen=new Set();for(const x of o.calls.filter(x=>x.take===floorSelected)){
    const key=JSON.stringify([x.kind,x.types,x.ids.map(id=>{const t=s.hand.find(t=>t.id===id);return [t.type,t.special||'',!!t.red];}).sort()]);

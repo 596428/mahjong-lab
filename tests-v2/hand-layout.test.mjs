@@ -13,14 +13,14 @@ test('auto sort follows manipulation and discarded draws; OFF keeps the chosen o
  const saved=JSON.parse(JSON.stringify(s));assert.equal(saved.autoSortHand,false);assert.deepEqual(handView(saved).body.map(t=>t.id),manual);act(saved,'draw');act(saved,'discard',{id:saved.drawn});assert.deepEqual(handView(saved).body.map(t=>t.id),manual);assertState(saved);
 });
 test('discarding an old tile integrates the retained draw, including legacy floor saves',()=>{
- const s=newGame({seed:'draw-fix'}),drawId=s.drawn;assert.equal(handView(s).draw.id,drawId);act(s,'discard',{id:s.hand.find(t=>t.id!==drawId).id});assert.equal(s.drawn,null);assert.equal(handView(s).draw,null);assert.ok(handView(s).body.some(t=>t.id===drawId));s.drawn=drawId;assert.equal(activeDraw(s),null);assert.equal(handView(s).draw,null);assertState(s);
+ const s=newGame({seed:'draw-fix'});act(s,'draw');const drawId=s.drawn;assert.equal(handView(s).draw.id,drawId);act(s,'discard',{id:s.hand.find(t=>t.id!==drawId).id});assert.equal(s.drawn,null);assert.equal(handView(s).draw,null);assert.ok(handView(s).body.some(t=>t.id===drawId));s.drawn=drawId;assert.equal(activeDraw(s),null);assert.equal(handView(s).draw,null);assertState(s);
 });
 test('reordering preserves scoring and survives save, discard and a new draw',()=>{
  const s=practice('ron'),initial=s.hand.map(t=>t.id),score=optionsFor(s).ron[0].score.score;const a=syncHandOrder(s),last=a.at(-1),first=a[0];assert.ok(moveHandTile(s,last,first));assert.equal(handView(s).body[0].id,last);assert.deepEqual(s.hand.map(t=>t.id),initial);assert.equal(optionsFor(s).ron[0].score.score,score);
  const saved=JSON.parse(JSON.stringify(s));assert.equal(handView(saved).body[0].id,last);act(saved,'draw');assert.equal(handView(saved).body[0].id,last);const keepOrder=handView(saved).body.map(t=>t.id);act(saved,'discard',{id:saved.drawn});assert.deepEqual(handView(saved).body.map(t=>t.id),keepOrder);assertState(saved);
 });
 test('fresh draw can be dragged into the rack; riichi blocks reorder and sort restores draw slot',()=>{
- const s=newGame({seed:'draw-drag'}),id=s.drawn;const first=handView(s).body[0].id;assert.ok(moveHandTile(s,id,first));assert.equal(handView(s).draw,null);assert.equal(handView(s).body[0].id,id);sortHand(s);assert.equal(handView(s).draw.id,id);s.riichi=true;assert.equal(moveHandTile(s,id,first),false);
+ const s=newGame({seed:'draw-drag'});act(s,'draw');const id=s.drawn;const first=handView(s).body[0].id;assert.ok(moveHandTile(s,id,first));assert.equal(handView(s).draw,null);assert.equal(handView(s).body[0].id,id);sortHand(s);assert.equal(handView(s).draw.id,id);s.riichi=true;assert.equal(moveHandTile(s,id,first),false);
 });
 function verify(layout,physical){assert.ok(layout);const displayed=layout.groups.flatMap(g=>g.tiles);assert.equal(displayed.length,physical.length);assert.equal(new Set(displayed.map(t=>t.id)).size,physical.length);assert.deepEqual(displayed.map(t=>t.id).sort(),physical.map(t=>t.id).sort());for(const t of displayed)assert.ok(domains(t).includes(t.resolvedAs));}
 test('normal wins display all chapter melds first and the pair last, using each tile once',()=>{

@@ -14,7 +14,7 @@ export function handView(s){
  return {body:ordered.filter(t=>t.id!==drawId),draw:ordered.find(t=>t.id===drawId)||null};
 }
 export function moveHandTile(s,id,targetId,after=false){
- if(!['action','floor','callDiscard'].includes(s.phase)||s.riichi||s.autoSortHand)return false;
+ if(!['action','floor','callDiscard','awaitDraw'].includes(s.phase)||s.riichi||s.autoSortHand)return false;
  const order=syncHandOrder(s);if(id===targetId||!order.includes(id)||targetId&&!order.includes(targetId))return false;
  const next=order.filter(x=>x!==id),index=targetId?next.indexOf(targetId)+(after?1:0):next.length;next.splice(index,0,id);s.handOrder=next;
  if(id===activeDraw(s))s.drawIntegrated=true;return true;
