@@ -1,3 +1,12 @@
+## v2.7 prototype
+
+- Play: https://596428.github.io/mahjong-lab/v2/
+- Shop catalog: https://596428.github.io/mahjong-lab/v2/shop-catalog.html
+- v1 remains available at the original URL below.
+- v2 is a static browser game; progress is stored in the current browser. Localhost and GitHub Pages have separate saves.
+- v2 checks: `node --test tests-v2/*.test.mjs` (64 tests).
+- Deployment: the existing Pages workflow tests both versions and publishes `dist/`.
+
 # 밤의 작탁
 
 플레이: https://596428.github.io/mahjong-lab/

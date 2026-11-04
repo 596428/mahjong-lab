@@ -25,6 +25,8 @@ jobs:
           node-version: '22'
       - name: Test game rules
         run: npm test
+      - name: Test v2 rules and shop effects
+        run: node --test tests-v2/*.test.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
