@@ -1,3 +1,9 @@
+## v4 테스트 (패등야)
+
+- Play: https://596428.github.io/mahjong-lab/v4/
+- 단일 HTML 빌드(`dist/v4/index.html`). 소스는 별도 작업 폴더(v4-game)에서 관리.
+- 판 종료 시 플레이 로그를 Google Sheets로 전송(`?log=0`으로 끔).
+
 ## v2.8 prototype
 
 - Play: https://596428.github.io/mahjong-lab/v2/
